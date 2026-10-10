@@ -2,16 +2,19 @@ import authRoutes from "./routes/auth";
 import express from "express";
 import { pool } from "./config/db";
 import itemRoutes from "./routes/items";
+import claimsRoutes from "./routes/claims";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use("/api/items", itemRoutes);
+app.use(express.static("public"));
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
+
+app.use("/api/items", itemRoutes);
+app.use("/api", claimsRoutes);
 
 app.get("/api/health", async (_req, res) => {
   try {
