@@ -88,7 +88,7 @@ Stores ownership claims submitted against found-item reports.
 - Unique constraint: `(item_id, claimant_id)`
 - Claim statuses: `pending`, `approved`, `rejected`, `completed`
 
-See the ER diagram in [`docs/ER-DIAGRAM.md`](docs/ER-DIAGRAM.md).
+See the ER diagram in [`DIAGRAM.md`](DIAGRAM.md).
 
 ## Project Structure
 
