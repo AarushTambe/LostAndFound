@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10251d">
+  <title>Campus Lost & Found</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">C<span>+</span></span>
+      <span>Campus<span class="brand-muted"> / Lost & Found</span></span>
+    </a>
+    <nav class="top-actions">
+      <span id="userBadge" class="user-badge hidden"></span>
+      <button id="loginBtn" class="btn btn-quiet">Log in</button>
+      <button id="registerBtn" class="btn btn-primary">Create account</button>
+      <button id="logoutBtn" class="btn btn-quiet hidden">Log out</button>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> YOUR CAMPUS, CONNECTED</div>
+        <h1>Lost something?<br><span>Let's bring it back.</span></h1>
+        <p>A shared campus board for lost belongings, found items, and verified returns.</p>
+        <div class="hero-actions">
+          <button class="btn btn-light" id="heroLostBtn">Report something lost <span>↗</span></button>
+          <button class="btn btn-outline-light" id="heroFoundBtn">Report something found</button>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="hero-object">⌕</div>
+        <div class="float-tag tag-top">FOUND ON CAMPUS</div>
+        <div class="float-tag tag-bottom">✦ &nbsp; COMMUNITY HELP</div>
+      </div>
+      <div class="hero-index">01 — CAMPUS COMMUNITY</div>
+    </section>
+
+    <section class="stats-row" aria-label="Announcement summary">
+      <div class="stat">
+        <span class="stat-number" id="totalCount">—</span>
+        <span class="stat-label">Total reports</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" id="lostCount">—</span>
+        <span class="stat-label">Reported lost</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" id="foundCount">—</span>
+        <span class="stat-label">Reported found</span>
+      </div>
+      <div class="stat stat-note">
+        <span class="stat-icon">↗</span>
+        <span class="stat-label">Every return starts with a report.</span>
+      </div>
+    </section>
+
+    <section class="content-section" id="announcements">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow dark-eyebrow">THE COMMUNITY BOARD</div>
+          <h2>Campus announcements<span class="heading-period">.</span></h2>
+          <p class="section-description">Browse recent reports and help reunite people with their belongings.</p>
+        </div>
+        <button id="reportBtn" class="btn btn-primary">＋ New report</button>
+      </div>
+
+      <div class="filter-panel">
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search items, places, descriptions…" autocomplete="off">
+        </label>
+        <select id="typeFilter" aria-label="Filter by report type">
+          <option value="">All reports</option>
+          <option value="lost">Lost items</option>
+          <option value="found">Found items</option>
+        </select>
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="">All categories</option>
+          <option>Electronics</option>
+          <option>Accessories</option>
+          <option>Documents</option>
+          <option>Bags</option>
+          <option>Clothing</option>
+          <option>Keys</option>
+          <option>Other</option>
+        </select>
+        <select id="statusFilter" aria-label="Filter by status">
+          <option value="">All statuses</option>
+          <option value="open">Open</option>
+          <option value="claimed">Claimed</option>
+          <option value="resolved">Resolved</option>
+        </select>
+      </div>
+
+      <div class="results-line">
+        <span id="resultsCount">Loading reports…</span>
+        <button id="refreshBtn" class="text-button">↻ Refresh</button>
+      </div>
+
+      <div id="itemsGrid" class="items-grid">
+        <div class="loading-card">Loading campus reports…</div>
+      </div>
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-icon">⌕</div>
+        <h3>No reports found</h3>
+        <p>Try another search or be the first to report an item.</p>
+        <button class="btn btn-primary" id="emptyReportBtn">Create a report</button>
+      </div>
+    </section>
+
+    <section id="staffSection" class="content-section staff-section hidden">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow dark-eyebrow">RESTRICTED ACCESS</div>
+          <h2>Desk staff workspace<span class="heading-period">.</span></h2>
+          <p class="section-description">Record custody, review claims, and complete verified returns.</p>
+        </div>
+        <span class="staff-pill">STAFF VIEW</span>
+      </div>
+      <div class="staff-notice">
+        <strong>Physical handover matters.</strong>
+        <span>Mark an item as received only after it has actually reached the lost-and-found desk.</span>
+      </div>
+      <h3 class="subsection-title">Items awaiting desk receipt</h3>
+      <div id="pendingItems" class="staff-list"></div>
+      <h3 class="subsection-title">Claims requiring review</h3>
+      <div id="claimsList" class="staff-list"></div>
+      <button id="staffRefreshBtn" class="btn btn-secondary">↻ Refresh staff data</button>
+    </section>
+
+    <section class="bottom-cta">
+      <div>
+        <div class="eyebrow">SMALL ACTION, BIG RELIEF</div>
+        <h2>Found something that isn't yours?</h2>
+        <p>Report it so its owner has a chance to find it.</p>
+      </div>
+      <button id="bottomFoundBtn" class="btn btn-light">Report a found item ↗</button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand footer-brand" href="/"><span class="brand-mark">C<span>+</span></span> Campus Lost & Found</a>
+    <span>Built for a more helpful campus.</span>
+    <span>© <span id="year"></span> Campus Portal</span>
+  </footer>
+
+  <dialog id="authDialog" class="modal">
+    <form id="authForm" class="modal-card">
+      <button type="button" class="modal-close" data-close="authDialog" aria-label="Close">×</button>
+      <div class="eyebrow dark-eyebrow" id="authEyebrow">WELCOME BACK</div>
+      <h2 id="authTitle">Log in<span class="heading-period">.</span></h2>
+      <p id="authDescription" class="modal-description">Sign in to report items and manage your claims.</p>
+      <div id="registerNameGroup" class="field-group hidden">
+        <label for="authName">Full name</label>
+        <input id="authName" name="name" maxlength="100" autocomplete="name">
+      </div>
+      <div class="field-group">
+        <label for="authEmail">College email</label>
+        <input id="authEmail" name="email" type="email" required maxlength="254" autocomplete="email">
+      </div>
+      <div class="field-group">
+        <label for="authPassword">Password</label>
+        <input id="authPassword" name="password" type="password" required minlength="8" autocomplete="current-password">
+      </div>
+      <p id="authError" class="form-error hidden"></p>
+      <button id="authSubmit" class="btn btn-primary btn-full" type="submit">Log in</button>
+      <p class="modal-switch" id="authSwitchText">New here? <button type="button" id="switchAuth" class="text-button">Create an account</button></p>
+    </form>
+  </dialog>
+
+  <dialog id="reportDialog" class="modal">
+    <form id="reportForm" class="modal-card">
+      <button type="button" class="modal-close" data-close="reportDialog" aria-label="Close">×</button>
+      <div class="eyebrow dark-eyebrow">CAMPUS COMMUNITY BOARD</div>
+      <h2 id="reportTitle">Create a report<span class="heading-period">.</span></h2>
+      <p class="modal-description">Share enough detail to help identify the item. Do not include passwords or other sensitive information.</p>
+      <div class="field-group">
+        <label for="reportType">Report type</label>
+        <select id="reportType" name="type" required>
+          <option value="lost">I lost an item</option>
+          <option value="found">I found an item</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label for="itemTitle">Item name</label>
+        <input id="itemTitle" name="title" required maxlength="150" placeholder="e.g. Black water bottle">
+      </div>
+      <div class="field-group">
+        <label for="itemDescription">Description</label>
+        <textarea id="itemDescription" name="description" required maxlength="2000" rows="3" placeholder="Colour, brand, identifying details…"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="itemCategory">Category</label>
+        <select id="itemCategory" name="category" required>
+          <option value="">Select a category</option>
+          <option>Electronics</option>
+          <option>Accessories</option>
+          <option>Documents</option>
+          <option>Bags</option>
+          <option>Clothing</option>
+          <option>Keys</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label for="itemLocation">Location on campus</label>
+        <input id="itemLocation" name="location" required maxlength="200" placeholder="e.g. Library, second floor">
+      </div>
+      <div class="field-group">
+        <label for="itemDate">Date lost or found</label>
+        <input id="itemDate" name="item_date" type="date" required>
+      </div>
+      <div class="field-group">
+        <label for="itemImage">Image URL <span class="optional-label">Optional</span></label>
+        <input id="itemImage" name="image_url" type="url" maxlength="1000" placeholder="https://…">
+      </div>
+      <p id="reportError" class="form-error hidden"></p>
+      <button id="reportSubmit" class="btn btn-primary btn-full" type="submit">Publish report</button>
+    </form>
+  </dialog>
+
+  <dialog id="claimDialog" class="modal">
+    <form id="claimForm" class="modal-card">
+      <button type="button" class="modal-close" data-close="claimDialog" aria-label="Close">×</button>
+      <div class="eyebrow dark-eyebrow">ITEM RECOVERY</div>
+      <h2>Claim this item<span class="heading-period">.</span></h2>
+      <p id="claimItemName" class="modal-description"></p>
+      <div class="field-group">
+        <label for="claimMessage">Help us verify ownership</label>
+        <textarea id="claimMessage" required maxlength="2000" rows="4" placeholder="Describe a detail that helps verify this item belongs to you…"></textarea>
+      </div>
+      <p class="helper-text">Staff will review your claim. Do not include passwords or financial details.</p>
+      <p id="claimError" class="form-error hidden"></p>
+      <button id="claimSubmit" class="btn btn-primary btn-full" type="submit">Submit claim</button>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
