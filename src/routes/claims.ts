@@ -9,12 +9,12 @@ import {
 const router = Router();
 
 function isValidId(id: unknown): id is string {
-  if (typeof id !== "string" || !/^\d+$/.test(id)) {
+  if (typeof id !== "string" || !/^[1-9]\d*$/.test(id)) {
     return false;
   }
 
   try {
-    return BigInt(id) > 0n;
+    return BigInt(id) <= 9223372036854775807n;
   } catch {
     return false;
   }
