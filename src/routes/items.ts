@@ -12,10 +12,12 @@ const validTypes = ["lost", "found"];
 const validStatuses = ["open", "claimed", "resolved"];
 
 function isValidId(id: unknown): id is string {
-  if (typeof id !== "string" || !/^\d+$/.test(id)) return false;
+  if (typeof id !== "string" || !/^[1-9]\d*$/.test(id)) {
+    return false;
+  }
 
   try {
-    return BigInt(id) > 0n;
+    return BigInt(id) <= 9223372036854775807n;
   } catch {
     return false;
   }
@@ -31,6 +33,24 @@ function isValidDate(value: unknown): value is string {
     Number.isFinite(date.getTime()) &&
     date.toISOString().slice(0, 10) === value
   );
+}
+
+function isValidImageUrl(value: unknown): boolean {
+  if (value === undefined || value === null || value === "") {
+    return true;
+  }
+
+  if (typeof value !== "string" || value.length > 2000) {
+    return false;
+  }
+
+  try {
+    const url = new URL(value);
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 // GET /api/items
@@ -331,14 +351,10 @@ router.post("/", authenticateToken, async (req, res) => {
     return;
   }
 
-  if (
-    image_url !== undefined &&
-    image_url !== null &&
-    (typeof image_url !== "string" || image_url.length > 2000)
-  ) {
-    res.status(400).json({ error: "Invalid image URL" });
-    return;
-  }
+  if (!isValidImageUrl(image_url)) {
+  res.status(400).json({ error: "Image URL must use HTTP or HTTPS" });
+  return;
+}
 
   try {
     const custodyStatus =
@@ -416,11 +432,18 @@ router.patch("/:id", authenticateToken, async (req, res) => {
   for (const update of updates) {
     const { field, value } = update;
 
-    if (field === "image_url") {
-      if (value !== null && (typeof value !== "string" || value.length > 2000)) {
-        res.status(400).json({ error: "Invalid image URL" });
-        return;
-      }
+   if (field === "image_url") {
+  if (!isValidImageUrl(value)) {
+    res.status(400).json({
+      error: "Image URL must use HTTP or HTTPS",
+    });
+    return;
+  }
+
+  update.value =
+    typeof value === "string" && value.trim()
+      ? value.trim()
+      : null;
     } else if (field === "item_date") {
       if (!isValidDate(value)) {
         res.status(400).json({ error: "Invalid item date" });
